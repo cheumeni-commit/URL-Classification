@@ -11,7 +11,8 @@ from src.contexts import context
 from src.constants import (c_PREDICTIONS_DATA,
                            c_LEXIQUE,
                            c_PREDICTIONS,
-                           c_LABELS
+                           c_LABELS,
+                           c_DICO
                           )
 from src.predict.main import predict, decode
 from src.io import load_json_file, save_prediction
@@ -20,11 +21,11 @@ from src.io import load_json_file, save_prediction
 logger = logging.getLogger(__name__)
 
 
-def prediction_transform(prob, mapping):
+def prediction_transform(prob, mapping, dico, X):
 
     y_pred = proba_max(prob)
-    predictions = [(k,v) for k,v in zip(decode(y_pred, mapping), 
-                    (pb[y_] for pb,y_ in zip(prob, y_pred)))]
+    predictions = [(X[i], dico.get(k),v) for k,v,i in zip(decode(y_pred, mapping), 
+                    (pb[y_] for pb,y_ in zip(prob, y_pred)), range(len(X)))]
     return predictions
 
 
@@ -49,11 +50,13 @@ def main(args):
     # load lexique
     lexiques = load_json_file(context.dirs.config / c_LEXIQUE)
     labels = load_json_file(context.dirs.config / c_LABELS)
+    dico = load_json_file(context.dirs.config / c_DICO)
     # transform data in DataFrame
     X = pd.DataFrame(X)
     # predict
     prob = predict(X, lexiques, do_probabilities=True)
-    predictions = prediction_transform(prob, labels)
+    predictions = prediction_transform(prob, labels, dico, X.url)
+    
     # save predictions
     save_prediction(predictions, path=context.dirs.raw_store_dir /c_PREDICTIONS)
 

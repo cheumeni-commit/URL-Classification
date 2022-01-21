@@ -1,12 +1,15 @@
 import logging
+from matplotlib.pyplot import axis
 
 import numpy as np
+import pandas as pd
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import SelectPercentile, f_classif
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.model_selection import ParameterGrid
+from imblearn.over_sampling import SMOTE
 
 from src.cli import context
 from src.training.features import build_train_test_set
@@ -21,10 +24,10 @@ from src.constants import (c_SIZE,
                            c_SEED,
                            c_MIN_LABEL_COUNT,
                            c_LEXIQUE,
+                           c_DAY,
                            c_LABELS
                           )
-                        
-global vectorizer,  feature_selector
+
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +36,17 @@ def _split_target(features_set):
     np.random.random(200)
     # Separate dataset into training and test
     (X_train, X_test, y_train, y_test) = _split_train_test(features_set)
+    # Over_Sample
+    #oversample = SMOTE(sampling_strategy='minority')
+    #X_train, y_train = oversample.fit_resample(X_train, y_train)
     # label encoder
     y_train, y_test = _label_encoder(y_train, y_test)
     # generation bag of word
     (X_train_bow, X_test_bow) = _bow_transformation(X_train, X_test)
     # Extract features
-    (X_train_features, X_test_features) = _extract_features(X_train_bow, X_test_bow, y_train)
+    (X_train_features, X_test_features) = _extract_features(X_train_bow,
+                                                             X_test_bow,
+                                                              y_train)
 
     return X_train_features, y_train, X_test_features, y_test
 
@@ -53,35 +61,51 @@ def _label_encoder(y_train, y_test):
 
 
 def _split_train_test(features_set):
+    
     X = features_set.loc[:, c_TEXT_TRANSFORMES].values
     y = features_set.loc[:, c_TAGS].values
+   
     # use stratify if min individu per class is sup than 10
     #https://stackoverflow.com/questions/34842405/parameter-stratify-from-method-train-test-split-scikit-learn
     if np.min(np.unique(y, return_counts=True)[1]) >=c_MIN_LABEL_COUNT:
-        return train_test_split(X, y, test_size = c_SIZE, random_state=c_SEED, stratify=y)
+        return train_test_split(X, y, 
+                                test_size = c_SIZE,
+                                 random_state=c_SEED
+                                 )
     else: 
-        return train_test_split(X, y, test_size = c_SIZE, random_state=c_SEED)
+        return train_test_split(X, y, 
+                                test_size = c_SIZE, 
+                                random_state=c_SEED
+                                )
 
 
 def _bow_transformation(X_train, X_test):
     vectorizer = Count_Vectorizer()
     X_train_bow = vectorizer.fit_transform(X_train)
     X_test_bow = vectorizer.transform(X_test)
-    save_lexique(vectorizer.get_feature_names(), path=context.dirs.config / c_LEXIQUE)
+    save_lexique(vectorizer.get_feature_names(),
+                 path=context.dirs.config / c_LEXIQUE
+                 )
     return X_train_bow.toarray(), X_test_bow.toarray()
 
 
 def Count_Vectorizer():
-    return CountVectorizer(max_features=c_BOX_MAX_FEATURES, strip_accents='unicode')
+    return CountVectorizer(max_features=c_BOX_MAX_FEATURES,
+                           strip_accents='unicode'
+                           )
 
 
 def Select_Percentile():
-    return SelectPercentile(f_classif, percentile = c_FEATURES_PERCENTILES)
+    return SelectPercentile(f_classif, 
+                            percentile = c_FEATURES_PERCENTILES
+                            )
 
 
 def _extract_features(X_train_bow, X_test_bow, y_train):
     feature_selector = Select_Percentile()
-    X_train_features = feature_selector.fit_transform(X_train_bow, y_train)
+    X_train_features = feature_selector.fit_transform(X_train_bow,
+                                                      y_train
+                                                      )
     X_test_features = feature_selector.transform(X_test_bow)
     return X_train_bow, X_test_bow
 
@@ -159,7 +183,9 @@ def _train_model(model, X, y):
 def train(models, name_models, dataset):
 
     # transformation of transactions lines
-    dataset_with_feature = build_train_test_set(dataset, column_ecriture=c_DETAIL_ECRITURE)
+    dataset_with_feature = build_train_test_set(dataset, 
+                                                column_ecriture=c_DETAIL_ECRITURE
+                                                )
     # Split the data set in X_train, y_train and X_test, y_test
     X_train, y_train, X_test, y_test = _split_target(dataset_with_feature)
 
@@ -180,7 +206,11 @@ def train(models, name_models, dataset):
         lbl = LabelEncoder()
         
         train_metrics, test_metrics = (
-             evaluate_model(fitted_model, X=features[0], y=features[1], classes=lbl.classes)
+             evaluate_model(fitted_model, 
+                            X=features[0], 
+                            y=features[1], 
+                            classes=lbl.classes
+                            )
              for features in ((X_train, y_train), (X_test, y_test))
         )
         metrics_test.append(test_metrics)

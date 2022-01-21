@@ -12,6 +12,7 @@ c_DEV = "dev.yml"
 
 # data column
 c_INDEX = 'index'
+c_DAY = 'day'
 c_DETAIL_ECRITURE = 'url'
 c_TEXT_TRANSFORMES = 'text_transformes'
 c_TAGS = 'tags'
@@ -31,12 +32,13 @@ c_SAVE_MODEL = "model.joblib"
 c_SAVE_METRICS = "metrics.json"
 c_PREDICTIONS_DATA = "prediction_inputs.json"
 c_LEXIQUE = 'lexique.json'
+c_DICO = 'dico.json'
 c_LABELS = 'labels.json'
 c_PREDICTIONS = 'predictions.json'
 
 # Train/Test sest
-c_MIN_LABEL_COUNT = 500
-c_SIZE = 0.3
-c_BOX_MAX_FEATURES = 500
+c_MIN_LABEL_COUNT = 250
+c_SIZE = 0.2
+c_BOX_MAX_FEATURES = 400
 c_FEATURES_PERCENTILES = 20
 c_SEED = 100
