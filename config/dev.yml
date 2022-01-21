@@ -1,0 +1,24 @@
+model_1:
+  name: 'Xgb_Classifier'
+  params:
+    learning_rate: 0.1
+    gamma : 0.5
+    reg_alpha : 0.1
+    reg_lambda : 1
+    max_depth : 8
+    subsample : 0.7
+model_2:
+  name: 'SGDClassifier'
+  params:
+    alpha: 0.01
+    max_iter: 10
+    penalty : 'l2'
+    loss : 'modified_huber'
+model_3:
+  name: 'RandomForestClassifier'
+  params:
+    n_estimators: 200
+    criterion: 'gini'
+    max_depth: 15
+    random_state: 0
+    max_leaf_nodes: 50
