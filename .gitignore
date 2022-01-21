@@ -1,0 +1,9 @@
+.DS_Store/*
+*.pyc
+.coverage/*
+Bank_transactions.egg-info/*
+experiment.ipynb
+*src/__init__.pyc
+src/__pycache__/*
+src/config/__pycache__/*
+src/training/__pycache__/*
