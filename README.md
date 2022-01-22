@@ -62,7 +62,7 @@ Si vous utilisez ce projet pour faire des travaux de recherche et pour résoudre
 ```BibTeX
 @misc{jmc2022ML-URL-Classification,
   author =       {Jean-Michel Cheumeni},
-  title =        {Generative AI},
+  title =        {ML URL Classification},
   howpublished = {\url{git@github.com:cheumeni-commit/URL-Classification.git}},
   year =         {2021}
 }
