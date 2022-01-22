@@ -38,8 +38,8 @@ c_LABELS = 'labels.json'
 c_PREDICTIONS = 'predictions.json'
 
 # Train/Test sest
-c_MIN_LABEL_COUNT = 100
+c_MIN_LABEL_COUNT = 150
 c_SIZE = 0.3
-c_BOX_MAX_FEATURES = 400
+c_BOX_MAX_FEATURES = 500
 c_FEATURES_PERCENTILES = 20
 c_SEED = 100
