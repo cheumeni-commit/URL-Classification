@@ -9,6 +9,7 @@ c_INTERMEDIATE = "Dataset.csv"
 
 # yml files
 c_DEV = "dev.yml"
+c_PROD = "prod.yml"
 
 # data column
 c_INDEX = 'index'
@@ -37,8 +38,8 @@ c_LABELS = 'labels.json'
 c_PREDICTIONS = 'predictions.json'
 
 # Train/Test sest
-c_MIN_LABEL_COUNT = 250
-c_SIZE = 0.2
+c_MIN_LABEL_COUNT = 100
+c_SIZE = 0.3
 c_BOX_MAX_FEATURES = 400
 c_FEATURES_PERCENTILES = 20
 c_SEED = 100

@@ -1,5 +1,5 @@
 model_1:
-  name: 'Xgb_Classifier'
+  name: 'xgb_Classifier'
   params:
     learning_rate: 0.1
     gamma : 0.5
@@ -7,6 +7,8 @@ model_1:
     reg_lambda : 1
     max_depth : 8
     subsample : 0.7
+    scale_pos_weight : 1
+    colsample_bytree : 0.5
 model_2:
   name: 'SGDClassifier'
   params:

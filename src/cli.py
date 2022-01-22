@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('command', choices=['run_dataset', 'run_train', 'run_predict'])
 parser.add_argument("-i", "--input-data")
-parser.add_argument('--environment', choices=['dev', 'production'])
+parser.add_argument('--environment', choices=['dev', 'prod'])
 parser.add_argument('--show-time', action='store_true')
 
 args = parser.parse_args()

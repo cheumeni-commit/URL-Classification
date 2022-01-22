@@ -26,5 +26,5 @@ if __name__ == '__main__':
 
     if context.environment == 'dev':
         _choice_env()
-    elif context.environment == 'production':
+    elif context.environment == 'prod':
         _choice_env()

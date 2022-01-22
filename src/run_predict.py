@@ -24,7 +24,9 @@ logger = logging.getLogger(__name__)
 def prediction_transform(prob, mapping, dico, X):
 
     y_pred = proba_max(prob)
-    predictions = [(X[i], dico.get(k),v) for k,v,i in zip(decode(y_pred, mapping), 
+
+    predictions = [{'url':X[i], 'class':dico.get(k),'score':float(v)} \
+                    for k,v,i in zip(decode(y_pred, mapping), 
                     (pb[y_] for pb,y_ in zip(prob, y_pred)), range(len(X)))]
     return predictions
 

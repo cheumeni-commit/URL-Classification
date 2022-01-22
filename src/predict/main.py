@@ -48,7 +48,6 @@ def _encoding(corpus, lexiques):
 def _encodage_text(corpus, lexique):
 
     Mat = np.zeros([len(corpus), len(lexique)], dtype=np.float64)
-
     for i, corp in enumerate(corpus):
         for j, lex in enumerate(lexique):
             counts_dict = {k:v for k,v in Counter(corp.split(" ")).most_common(5000)}

@@ -8,8 +8,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import SelectPercentile, f_classif
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-from sklearn.model_selection import ParameterGrid
-from imblearn.over_sampling import SMOTE
 
 from src.cli import context
 from src.training.features import build_train_test_set
@@ -24,7 +22,6 @@ from src.constants import (c_SIZE,
                            c_SEED,
                            c_MIN_LABEL_COUNT,
                            c_LEXIQUE,
-                           c_DAY,
                            c_LABELS
                           )
 
@@ -36,9 +33,6 @@ def _split_target(features_set):
     np.random.random(200)
     # Separate dataset into training and test
     (X_train, X_test, y_train, y_test) = _split_train_test(features_set)
-    # Over_Sample
-    #oversample = SMOTE(sampling_strategy='minority')
-    #X_train, y_train = oversample.fit_resample(X_train, y_train)
     # label encoder
     y_train, y_test = _label_encoder(y_train, y_test)
     # generation bag of word
@@ -70,7 +64,8 @@ def _split_train_test(features_set):
     if np.min(np.unique(y, return_counts=True)[1]) >=c_MIN_LABEL_COUNT:
         return train_test_split(X, y, 
                                 test_size = c_SIZE,
-                                 random_state=c_SEED
+                                 random_state=c_SEED,
+                                 stratify = y
                                  )
     else: 
         return train_test_split(X, y, 
@@ -141,46 +136,46 @@ class LabelEncoder(object):
 
 def algorithm_pipeline(GridMethod, X_train_data, 
                         y_train_data, 
-                       model, param_grid, cv=5, 
+                       model, param_grid, cv=3, 
                        scoring_fit='roc_auc'
                        ):
     
     if GridMethod == "GridSearchCV":
         gs = GridSearchCV(
-            estimator=model,
+            estimator=model(),
             param_grid=param_grid, 
             cv=cv, 
             n_jobs=-1, 
-            scoring=scoring_fit,
-            verbose=1
+            scoring=scoring_fit
         )
         fitted_model = gs.fit(X_train_data, y_train_data)
         
     else:
         cs = RandomizedSearchCV(
-            estimator=model,
+            estimator=model(),
             param_grid=param_grid, 
             cv=cv, 
             n_jobs=-1, 
-            scoring=scoring_fit,
-            verbose=1  
+            scoring=scoring_fit
         )
         fitted_model = cs.fit(X_train_data, y_train_data)
     
     return fitted_model
 
 
-def __train_model(model, X, y, param_grid):
-    return algorithm_pipeline("GridSearchCV", X, y, 
+def _optim_train_model(model, param_grid, X, y):
+    model = algorithm_pipeline("GridSearchCV", X, y, 
                        model, param_grid
                        )
+    return model.best_estimator_
             
-def _train_model(model, X, y):
-    model.fit(X, y) 
-    return model
+def _train_model(model, param_model, X, y):
+    cl = model(**param_model)
+    cl.fit(X, y) 
+    return cl
 
 
-def train(models, name_models, dataset):
+def train(models, name_models, param_models, context, dataset):
 
     # transformation of transactions lines
     dataset_with_feature = build_train_test_set(dataset, 
@@ -195,10 +190,14 @@ def train(models, name_models, dataset):
     metrics_train, metrics_test = [], []
     best_model = []
     name_model = []
-    for model, name in zip(models, name_models):
+    for model, name, param_model in zip(models, name_models, param_models):
 
         logger.info(f"Training model...")
-        fitted_model = _train_model(model, X_train, y_train)
+        if context.environment == 'prod':
+            fitted_model = _optim_train_model(model, param_model, X_train, y_train)
+        else :
+            fitted_model = _train_model(model, param_model, X_train, y_train)
+
         best_model.append(fitted_model)
         name_model.append(name)
         logger.info("Model trained.")
@@ -208,7 +207,7 @@ def train(models, name_models, dataset):
         train_metrics, test_metrics = (
              evaluate_model(fitted_model, 
                             X=features[0], 
-                            y=features[1], 
+                           y=features[1], 
                             classes=lbl.classes
                             )
              for features in ((X_train, y_train), (X_test, y_test))
@@ -223,15 +222,15 @@ def train(models, name_models, dataset):
         logger.info(f"Test: {test_metrics.get('overall')}")
         logger.info("=" *len(metrics_msg))
 
-    # choix du meilleur model avec le f1_score
+    # choix du meilleur model en s'appuyant sur le f1_score
     f1_score = [res.get('overall').get('f1') for res in metrics_test]
     index_best_model = np.argmax(f1_score)
     
     return {
-         'model': best_model[index_best_model],
-         'metrics': {
-             'name_model': name_model[index_best_model],
-             'train': metrics_train[index_best_model].get('overall'),
-             'test': metrics_test[index_best_model].get('overall')
-         }
-     }
+          'model': best_model[index_best_model],
+          'metrics': {
+              'name_model': name_model[index_best_model],
+              'train': metrics_train[index_best_model].get('overall'),
+              'test': metrics_test[index_best_model].get('overall')
+          }
+      }
