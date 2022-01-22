@@ -60,7 +60,7 @@ Pour faire fonctionner le projet, il faut soit réaliser un 'fork' ou le 'cloner
 Si vous utilisez ce projet pour faire des travaux de recherche et pour résoudre d'autres problèmes, merci de me citer comme suit.
 
 ```BibTeX
-@misc{jmc2021GenerativeIA,
+@misc{jmc2022ML-URL-Classification,
   author =       {Jean-Michel Cheumeni},
   title =        {Generative AI},
   howpublished = {\url{git@github.com:cheumeni-commit/URL-Classification.git}},
