@@ -11,6 +11,7 @@ Nous disposons de 5 datatset, qui fusionnés, permettent d'obtenir un unique dat
 - l'analyse de la distribution des occurences des labels montre une asymétrie vers la droite (un fort skewness)
 - avec une taille de vecteur encoder (embbeding) de 500 et un seuil d'occurence à 150 (occurrences min des labels), nous obtenons les resultats suivant:
     "precision": 0.81, "recall": 0.82, "f1": 0.80,
+- nous n'avons pas utilisé de technique de 'over-sample' comme par exemple 'SMOTE' pour augmenter les données des classes fiables. En effet, faire cela revient à créer des 'url' artificielles pour l'entraînement du modèle. Or ces données artificielles, risques de ne pas être réprésentatives des 'url' réelles associées à ces différentes classes et par conséquent, peuvent introduire un biais lors de l'apprentissage (pour plus d'info, lire la conclusion de ce travail : https://www.kaggle.com/theoviel/dealing-with-class-imbalance-with-smote) et ainsi dégrader les perfs lors de la prédiction.
 
 # Modelisation
 
@@ -32,7 +33,10 @@ Pour ce faire :
 # Installations
 
 Pour faire fonctionner le projet, il faut soit réaliser un 'fork' ou le 'cloner', ensuite :
-- installer les libs contenues dans le fichier 'requirements.txt' dans un 'venv', et taper en ligne de commande : pip install -e . 
+- installer les libs contenues dans le fichier 'requirements.txt' dans un 'venv', et taper en ligne de commande : 
+```
+pip install -e .
+```
 
 # Requirements
 
@@ -40,9 +44,18 @@ Pour faire fonctionner le projet, il faut soit réaliser un 'fork' ou le 'cloner
 
 ## Utilisation
 
-- fusionner et générer le dataset intermédaire pour l'apprentissage : python3 -m src run_dataset --e dev (ou 'prod')
-- réaliser l'apprentissage des différents modèles de classification : python3 -m src run_train --e dev (ou 'prod)
-- réaliser l'inférence ou la prédiction du meilleur modèle sauvé : python3 -m src run_predict --e dev (ou 'prod')
+- fusionner et générer le dataset intermédaire pour l'apprentissage :
+```
+python3 -m src run_dataset --e dev (ou 'prod')
+```
+- réaliser l'apprentissage des différents modèles de classification : 
+```
+python3 -m src run_train --e dev (ou 'prod)
+```
+- réaliser l'inférence ou la prédiction du meilleur modèle sauvé : 
+```
+python3 -m src run_predict --e dev (ou 'prod')
+```
 
 # ChangeLog
 
