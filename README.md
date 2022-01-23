@@ -11,7 +11,7 @@ Nous disposons de 5 datatset, qui fusionnés, permettent d'obtenir un unique dat
 - l'analyse de la distribution des occurences des labels montre une asymétrie vers la droite (un fort skewness)
 - avec une taille de vecteur encoder (embbeding) de 500 et un seuil d'occurence à 150 (occurrences min des labels), nous obtenons les resultats suivant:
     "precision": 0.81, "recall": 0.82, "f1": 0.80,
-- nous n'avons pas utilisé de technique de 'over-sample' comme par exemple 'SMOTE' pour augmenter les données des classes fiables. En effet, faire cela revient à créer des 'url' artificielles pour l'entraînement du modèle. Or ces données artificielles, risques de ne pas être réprésentatives des 'url' réelles associées à ces différentes classes et par conséquent, peuvent introduire un biais lors de l'apprentissage (pour plus d'info, lire la conclusion de ce travail : https://www.kaggle.com/theoviel/dealing-with-class-imbalance-with-smote) et ainsi dégrader les perfs lors de la prédiction.
+- nous n'avons pas utilisé de techniques d'over-sample' comme par exemple 'SMOTE' pour augmenter les données des classes fiables. En effet, faire cela revient à créer des 'url' artificielles pour l'entraînement du modèle. Or ces données artificielles, risques de ne pas être réprésentatives des 'url' réelles associées à ces différentes classes et par conséquent, peuvent introduire un biais lors de l'apprentissage (pour plus d'info, lire la conclusion de ce travail : https://www.kaggle.com/theoviel/dealing-with-class-imbalance-with-smote) et ainsi dégrader les perfs lors de la prédiction.
 
 # Modelisation
 
@@ -24,11 +24,15 @@ Pour ce faire :
 - le déséquilibre de classe a été géré avec le 'stratify' de la fonction train_test_split()
 - nous avons utilisé trois types de classifier ML (de sklearn et xgboost) : RandomForestClassifier, xgb_Classifier et SGDClassifier
 - nous avons deux modes :
+```
     - dev : utilisation des classifiers sans optimisation des parametres (non utilisation de GridSearchCV)
     - prod : avec utilisation du GridSearchCV ou RandomSearchCV et le choix du meilleur classifier + sauvegarde des poids (serialisation)
-- comme metrique d'évaluation, nous avons utilisé:
+```
+- comme metriques d'évaluation, nous avons utilisé:
+```
     - dev : les métriques de 'précision', 'recall' et 'f1_score' pour l'évaluation sur la base de test
     - prod : la métrique 'roc_auc' pour l'optimisation et les métriques de 'précision', 'recall' et 'f1_score' pour l'évaluation sur la base de test et le choix du meilleur modèle
+```
 
 # Installations
 
@@ -58,8 +62,9 @@ python3 -m src run_predict --e dev (ou 'prod')
 ```
 
 # ChangeLog
-
+```
 - V.1.0.0 : Release intiale
+```
 
 # Arborescence du projet
 
