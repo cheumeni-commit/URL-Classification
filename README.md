@@ -73,9 +73,9 @@ python3 -m src run_predict --e dev (ou 'prod')
 Si vous utilisez ce projet pour faire des travaux de recherche et pour résoudre d'autres problèmes, merci de me citer comme suit.
 
 ```BibTeX
-@misc{jmc2021GenerativeIA,
+@misc{jmc2022ML-URL-Classification,
   author =       {Jean-Michel Cheumeni},
-  title =        {Generative AI},
+  title =        {ML URL Classification},
   howpublished = {\url{git@github.com:cheumeni-commit/URL-Classification.git}},
   year =         {2021}
 }
