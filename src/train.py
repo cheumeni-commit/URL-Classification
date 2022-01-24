@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import SelectPercentile, f_classif
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from src.cli import context
 from src.training.features import build_train_test_set
@@ -21,7 +22,8 @@ from src.constants import (c_SIZE,
                            c_SEED,
                            c_MIN_LABEL_COUNT,
                            c_LEXIQUE,
-                           c_LABELS
+                           c_LABELS,
+                           c_BALANCE
                           )
 
 
@@ -36,6 +38,10 @@ def _split_target(features_set):
     y_train, y_test = _label_encoder(y_train, y_test)
     # generation bag of word
     (X_train_bow, X_test_bow) = _bow_transformation(X_train, X_test)
+    # over-sample
+    if c_BALANCE :
+        OverSample = SMOTE()
+        X_train_bow, y_train = OverSample.fit_resample(X_train_bow, y_train)
     # Extract features
     (X_train_features, X_test_features) = _extract_features(X_train_bow,
                                                              X_test_bow,

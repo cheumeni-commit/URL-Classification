@@ -10,8 +10,9 @@ Nous disposons de 5 datatset, qui fusionnés, permettent d'obtenir un unique dat
 - les labels, éléments de la colonne 'target', sont très déséquilibrées. En effet, nous avons 90% des url qui ont moins de 150 occurences
 - l'analyse de la distribution des occurences des labels montre une asymétrie vers la droite (un fort skewness)
 - avec une taille de vecteur encoder (embbeding) de 500 et un seuil d'occurence à 150 (occurrences min des labels), nous obtenons les resultats suivant:
-    "precision": 0.81, "recall": 0.82, "f1": 0.80,
-- nous n'avons pas utilisé de techniques d'over-sample' comme par exemple 'SMOTE' pour augmenter les données des classes fiables. En effet, faire cela revient à créer des 'url' artificielles pour l'entraînement du modèle. Or ces données artificielles, risques de ne pas être réprésentatives des 'url' réelles associées à ces différentes classes et par conséquent, peuvent introduire un biais lors de l'apprentissage (pour plus d'info, lire la conclusion de ce travail : https://www.kaggle.com/theoviel/dealing-with-class-imbalance-with-smote) et ainsi dégrader les perfs lors de la prédiction.
+    "precision": 0.81, "recall": 0.80, "f1": 0.80, sans optimisation avec GridSearchCV sur une base de test de 2000 url
+- nous avons utilisé une technique d'over-sample' appelée 'SMOTE' pour augmenter les données des classes fiables. En effet, cela revient à créer des 'url' synthétiques pour l'entraînement du modèle. Or, il faut savoir que ces données synthétiques peuvent ne pas être réprésentatives des 'url' réelles associées à ces différentes classes et par conséquent, peuvent introduire un biais lors de l'apprentissage (pour plus d'info, lire la conclusion de ce travail :[SMOTE](https://www.kaggle.com/theoviel/dealing-with-class-imbalance-with-smote) et ainsi dégrader les perfs lors de la prédiction. Pour ce faire, nous avons mis une option dans le fichier 'constants.py', qui permet d'activer ou pas le SMOTE (c_BALANCE)
+- en utilisant SMOTE, l'apprentissage pourrait durer longtemps selon le type de PC utilisé (GPU ou CPU)
 
 # Modelisation
 
@@ -69,9 +70,9 @@ python3 -m src run_predict --e dev (ou 'prod')
 # Arborescence du projet
 
 - classique :
-    - config
-    - data
-    - src
+    - [config](https://github.com/cheumeni-commit/URL-Classification/tree/main/config)
+    - [data](https://github.com/cheumeni-commit/URL-Classification/tree/main/data)
+    - [src](https://github.com/cheumeni-commit/URL-Classification/tree/main/src)
 
 # Citing ML URL-Classification
 
