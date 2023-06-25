@@ -12,5 +12,4 @@ jobs:
         run: |
           # Your ML workflow goes here
           pip install -r requirements.txt
-          cd src
-          python run_train.py
+          python3 -m src run_train --e dev
