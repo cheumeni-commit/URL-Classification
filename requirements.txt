@@ -5,5 +5,5 @@ torch==1.9.0
 xgboost==1.5.1
 pytest==6.2.5
 pyyaml==5.1.2
-pyrrow
-imbalanced-learn
+pyrrow==6.0.1
+imbalanced-learn==0.9.0
